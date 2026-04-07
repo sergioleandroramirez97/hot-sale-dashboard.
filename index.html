@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hot Sale Argentina — Dashboard &amp; Estrategia</title>
+  <!-- Favicon en canvas: blanco → negro (grises) cada 3s, con bordes visibles -->
+  <script>
+    (function () {
+      var grays = [255, 220, 180, 140, 100, 60, 30, 0];
+      var idx = 0;
+      var dir = 1;
+
+      var size = 48;
+      var canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      var ctx = canvas.getContext("2d");
+
+      function drawRoundedRect(x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+
+      function paintFavicon() {
+        var g = grays[idx];
+        idx += dir;
+        if (idx >= grays.length) {
+          idx = grays.length - 2;
+          dir = -1;
+        }
+        if (idx < 0) {
+          idx = 1;
+          dir = 1;
+        }
+
+        var isLight = g > 140;
+        var outerStroke = isLight ? "#0a0a0a" : "#f5f5f5";
+        var innerStroke = isLight ? "rgba(0, 0, 0, 0.5)" : "rgba(255, 255, 255, 0.55)";
+
+        ctx.clearRect(0, 0, size, size);
+        ctx.fillStyle = "rgb(" + g + ", " + g + ", " + g + ")";
+        ctx.fillRect(0, 0, size, size);
+
+        ctx.strokeStyle = outerStroke;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(1, 1, size - 2, size - 2);
+
+        ctx.strokeStyle = innerStroke;
+        ctx.lineWidth = 2;
+        drawRoundedRect(6, 6, size - 12, size - 12, 8);
+        ctx.stroke();
+        var dataUrl = canvas.toDataURL("image/png");
+        var prev = document.getElementById("dynamic-favicon");
+        if (prev) prev.remove();
+        var link = document.createElement("link");
+        link.id = "dynamic-favicon";
+        link.rel = "icon";
+        link.type = "image/png";
+        link.href = dataUrl;
+        document.head.appendChild(link);
+      }
+
+      paintFavicon();
+      setInterval(paintFavicon, 3000);
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --bg-elevated: #334155;
+      --accent: #22c55e;
+      --accent-dim: #16a34a;
+      --accent-glow: rgba(34, 197, 94, 0.35);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(148, 163, 184, 0.15);
+      --danger: #f87171;
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Fondo sutil tipo dashboard */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-glow), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 50%, rgba(34, 197, 94, 0.08), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 4rem;
+    }
+
+    header.hero {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(34, 197, 94, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.65rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.6rem;
+      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+    }
+
+    /* Countdown */
+    .countdown-block {
+      margin-top: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    .countdown-block h2 {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      width: 100%;
+      text-align: center;
+      margin-bottom: -0.25rem;
+    }
+
+    .countdown-grid {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .cd-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1.1rem;
+      min-width: 4.5rem;
+      text-align: center;
+    }
+
+    .cd-item .num {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cd-item .lbl {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Secciones */
+    section {
+      margin-top: 3rem;
+    }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-head h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-head span.hint {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Gráfico */
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 1rem 1.25rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 0 0.5rem;
+    }
+
+    .chart-legend p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .chart-legend strong {
+      color: var(--accent);
+    }
+
+    .chart-area {
+      position: relative;
+      height: 320px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 0 0.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media (min-width: 768px) {
+      .chart-area {
+        height: 380px;
+        gap: 8px;
+        padding: 0 0.75rem 2.25rem;
+      }
+    }
+
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 48px;
+      border: none;
+      padding: 0;
+      border-radius: 8px 8px 4px 4px;
+      background: linear-gradient(180deg, #4ade80 0%, var(--accent-dim) 45%, #15803d 100%);
+      cursor: pointer;
+      position: relative;
+      -webkit-appearance: none;
+      appearance: none;
+      font: inherit;
+      color: inherit;
+      transform-origin: bottom center;
+      transform: scaleY(0);
+      transition:
+        box-shadow var(--transition),
+        filter var(--transition),
+        opacity var(--transition);
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .bar:hover,
+    .bar:focus-visible {
+      filter: brightness(1.15);
+      box-shadow: 0 8px 28px var(--accent-glow);
+      outline: none;
+    }
+
+    .bar.active {
+      box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+    }
+
+    .bar.animated {
+      animation: barGrow 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes barGrow {
+      from {
+        transform: scaleY(0);
+      }
+      to {
+        transform: scaleY(1);
+      }
+    }
+
+    .bar-label {
+      margin-top: 0.5rem;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    @media (min-width: 640px) {
+      .bar-label {
+        font-size: 0.72rem;
+      }
+    }
+
+    /* Tooltip */
+    #chart-tooltip {
+      position: fixed;
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.92) translateY(6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      max-width: min(320px, calc(100vw - 24px));
+    }
+
+    #chart-tooltip.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .tooltip-inner {
+      background: #0c1222;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.1rem;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+    }
+
+    .tooltip-inner h3 {
+      font-size: 1rem;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+
+    .tooltip-inner .year-tag {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .tooltip-block {
+      margin-top: 0.65rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .tooltip-block:first-of-type {
+      border-top: none;
+      padding-top: 0;
+      margin-top: 0;
+    }
+
+    .tooltip-block h4 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .tooltip-block ul {
+      list-style: none;
+      font-size: 0.82rem;
+      color: #e2e8f0;
+    }
+
+    .tooltip-block li {
+      padding: 0.15rem 0;
+      padding-left: 0.85rem;
+      position: relative;
+    }
+
+    .tooltip-block li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* Modal (click / mobile) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.82);
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-box {
+      background: #0c1222;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      border-radius: var(--radius);
+      max-width: 400px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      transform: scale(0.94);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-backdrop.open .modal-box {
+      transform: scale(1);
+    }
+
+    .modal-close {
+      float: right;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+      margin: -0.5rem -0.5rem 0.5rem 0.5rem;
+    }
+
+    .modal-close:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Cards grid genérico */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.35rem;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(34, 197, 94, 0.25);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .card .stat {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      margin-top: 0.35rem;
+      font-weight: 600;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.45rem;
+    }
+
+    /* Tendencias rubro */
+    .trend-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .trend-tabs button {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .trend-tabs button:hover,
+    .trend-tabs button.active {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .trend-panel {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .trend-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .trend-list {
+      list-style: none;
+    }
+
+    .trend-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .trend-list li:last-child {
+      border-bottom: none;
+    }
+
+    .trend-bar-mini {
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent), #4ade80);
+      margin-top: 0.35rem;
+      max-width: 100%;
+    }
+
+    /* Antes / Después */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 700px) {
+      .compare {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .compare-col {
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .compare-col.before {
+      background: rgba(248, 113, 113, 0.08);
+      border-color: rgba(248, 113, 113, 0.25);
+    }
+
+    .compare-col.after {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.35);
+    }
+
+    .compare-col h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .compare-col.before h3 {
+      color: var(--danger);
+    }
+
+    .compare-col.after h3 {
+      color: var(--accent);
+    }
+
+    .compare-col ul {
+      list-style: none;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .compare-col li {
+      padding: 0.4rem 0;
+      padding-left: 1.1rem;
+      position: relative;
+    }
+
+    .compare-col.before li::before {
+      content: "✕";
+      position: absolute;
+      left: 0;
+      color: var(--danger);
+      font-size: 0.75rem;
+    }
+
+    .compare-col.after li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* PDP cupón */
+    .pdp-card {
+      background: linear-gradient(145deg, var(--bg-card) 0%, #1a2744 100%);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      display: grid;
+      gap: 1.25rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .pdp-img {
+      aspect-ratio: 16/10;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      border: 1px dashed var(--border);
+    }
+
+    .pdp-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .pdp-price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .pdp-price del {
+      color: var(--text-muted);
+      font-size: 1rem;
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, #4ade80, var(--accent-dim));
+      color: #052e16;
+      border: none;
+      padding: 0.95rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 28px var(--accent-glow);
+    }
+
+    .coupon-box {
+      background: var(--bg);
+      border: 1px dashed var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      text-align: center;
+      display: none;
+    }
+
+    .coupon-box.visible {
+      display: block;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .coupon-code {
+      font-family: ui-monospace, monospace;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+    }
+
+    .coupon-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    /* Storytelling */
+    .story {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      border-left: 4px solid var(--accent);
+    }
+
+    .story p {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .story p:last-child {
+      margin-bottom: 0;
+    }
+
+    .story strong {
+      color: var(--text);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .sr-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="badge">Argentina · Ecommerce · Data</div>
+      <h1>Hot Sale: dashboard de contexto y conversión</h1>
+      <p>
+        Explorá la evolución año a año, anticipá la fecha clave y activá tácticas que
+        convierten visitas en ventas durante el evento más grande del retail digital.
+      </p>
+
+      <!-- SECCIÓN 2: Countdown -->
+      <div class="countdown-block" aria-live="polite">
+        <h2 id="countdown-title">Faltan para el Hot Sale</h2>
+        <div class="countdown-grid" id="countdown-grid">
+          <div class="cd-item"><div class="num" id="cd-days">—</div><div class="lbl">Días</div></div>
+          <div class="cd-item"><div class="num" id="cd-hours">—</div><div class="lbl">Horas</div></div>
+          <div class="cd-item"><div class="num" id="cd-mins">—</div><div class="lbl">Min</div></div>
+          <div class="cd-item"><div class="num" id="cd-secs">—</div><div class="lbl">Seg</div></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- SECCIÓN 1: Gráfico -->
+    <section id="grafico" aria-labelledby="grafico-title">
+      <div class="section-head">
+        <h2 id="grafico-title">📊 Evolución Hot Sale (facturación estimada)</h2>
+        <span class="hint">Hover: tooltip · Click: detalle</span>
+      </div>
+      <div class="chart-card">
+        <div class="chart-legend">
+          <p>Escala relativa al pico <strong>2025</strong> · Montos en ARS (millones)</p>
+          <p class="sr-hint" style="margin:0;text-align:right">Barras con teclado: Tab + Enter</p>
+        </div>
+        <div class="chart-area" id="chart-area" role="group" aria-label="Barras por año"></div>
+        <p class="sr-hint">Los montos históricos combinan reportes públicos y proyecciones ilustrativas para la visualización.</p>
+      </div>
+    </section>
+
+    <!-- Tooltip flotante -->
+    <div id="chart-tooltip" role="tooltip" aria-hidden="true">
+      <div class="tooltip-inner" id="tooltip-content"></div>
+    </div>
+
+    <!-- Modal (click) -->
+    <div class="modal-backdrop" id="chart-modal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button type="button" class="modal-close" id="modal-close" aria-label="Cerrar">×</button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: Datos reales -->
+    <section id="datos" aria-labelledby="datos-title">
+      <div class="section-head">
+        <h2 id="datos-title">📌 Indicadores clave</h2>
+        <span class="hint">Señales de escala del evento</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="stat">+11M</div>
+          <h3>Productos (2025)</h3>
+          <p>Catálogo masivo: más oferta implica más comparación y necesidad de destacar propuesta de valor.</p>
+        </div>
+        <div class="card">
+          <div class="stat">+10M</div>
+          <h3>Productos (2024)</h3>
+          <p>Base previa al récord; útil para benchmarking de mix y stock crítico.</p>
+        </div>
+        <div class="card">
+          <div class="stat">70%</div>
+          <h3>Tráfico mobile</h3>
+          <p>PDP y checkout deben brillar en pantallas chicas: velocidad, legibilidad y CTA fijos.</p>
+        </div>
+        <div class="card">
+          <div class="stat">30%</div>
+          <h3>Descuento promedio</h3>
+          <p>El usuario compara; el mensaje claro de ahorro y cuotas reduce fricción.</p>
+        </div>
+        <div class="card">
+          <div class="stat">+5M</div>
+          <h3>Órdenes</h3>
+          <p>Volumen operativo alto: logística, SLA y postventa son parte de la conversión.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: Tendencias por rubro -->
+    <section id="rubros" aria-labelledby="rubros-title">
+      <div class="section-head">
+        <h2 id="rubros-title">🧭 Tendencias por rubro</h2>
+        <span class="hint">Facturación · Volumen · Búsquedas</span>
+      </div>
+      <div class="card" style="padding: 1.25rem">
+        <div class="trend-tabs" role="tablist">
+          <button type="button" class="active" data-tab="fact" role="tab" aria-selected="true">Facturación</button>
+          <button type="button" data-tab="vol" role="tab" aria-selected="false">Volumen</button>
+          <button type="button" data-tab="busq" role="tab" aria-selected="false">Búsquedas</button>
+        </div>
+        <div id="panel-fact" class="trend-panel active" role="tabpanel">
+          <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.75rem">Tech y electro lideran ticket y share de facturación en campañas tipo Hot Sale.</p>
+          <ul class="trend-list">
+            <li><span>Tecnología &amp; computing</span><span style="color:var(--accent);font-weight:700">Alto ticket</span></li>
+            <li><div style="flex:1"><span>Electrodomésticos</span><div class="trend-bar-mini" style="width:92%"></div></div></li>
+            <li><div style="flex:1"><span>Audio / TV</span><div class="trend-bar-mini" style="width:78%"></div></div></li>
+          </ul>
+        </div>
+        <div id="panel-vol" class="trend-panel" role="tabpanel" hidden>
+          <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.75rem">Alimentos y belleza mueven unidades: margen y recurrencia importan.</p>
+          <ul class="trend-list">
+            <li><span>Alimentos &amp; bebidas</span><span style="color:var(--accent);font-weight:700">Alto volumen</span></li>
+            <li><div style="flex:1"><span>Belleza &amp; cuidado personal</span><div class="trend-bar-mini" style="width:88%"></div></div></li>
+            <li><div style="flex:1"><span>Indumentaria básica</span><div class="trend-bar-mini" style="width:85%"></div></div></li>
+          </ul>
+        </div>
+        <div id="panel-busq" class="trend-panel" role="tabpanel" hidden>
+          <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.75rem">Intención de búsqueda: optimizar títulos, filtros y landings por query.</p>
+          <ul class="trend-list">
+            <li><span>Zapatillas</span><span style="color:var(--accent);font-weight:700">Top búsquedas</span></li>
+            <li><span>Celulares</span><span style="color:var(--accent);font-weight:700">Alta intención</span></li>
+            <li><span>Notebooks / Auriculares</span><span style="color:var(--text-muted)">Estacional</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 5: Ideas que funcionan -->
+    <section id="ideas" aria-labelledby="ideas-title">
+      <div class="section-head">
+        <h2 id="ideas-title">🚀 Ideas que funcionan</h2>
+        <span class="hint">Estrategias de campaña</span>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <h3>🎯 Oferta ancla + bundles</h3>
+          <p>Producto estrella con descuento agresivo y combos que suben el ticket medio sin confundir el mensaje.</p>
+        </div>
+        <div class="card">
+          <h3>⏰ Picos horarios</h3>
+          <p>Push y emails alineados a salarios y hábitos mobile (mediodía y noche) maximizan conversión.</p>
+        </div>
+        <div class="card">
+          <h3>💳 Cuotas sin interés visibles</h3>
+          <p>Mostrar cuota en el primer viewport de la PDP reduce abandono en categorías de ticket alto.</p>
+        </div>
+        <div class="card">
+          <h3>🔔 Stock bajo real</h3>
+          <p>Urgencia honesta (unidades limitadas) supera contadores falsos y protege confianza de marca.</p>
+        </div>
+        <div class="card">
+          <h3>📧 Carrito abandonado</h3>
+          <p>Secuencia corta con cupón escalonado o envío bonificado en ventana Hot Sale.</p>
+        </div>
+        <div class="card">
+          <h3>🤝 Marketplaces + marca</h3>
+          <p>Coherencia de precio y creatividades entre canal propio y terceros evita fricción comparativa.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 6: Micro UX -->
+    <section id="micro" aria-labelledby="micro-title">
+      <div class="section-head">
+        <h2 id="micro-title">⚡ Micro UX para CRO</h2>
+        <span class="hint">Detalles que suman puntos de conversión</span>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <h3>CTA único y visible</h3>
+          <p>Un botón primario por vista; color de alto contraste y copy orientado a resultado (“Comprar con descuento”).</p>
+        </div>
+        <div class="card">
+          <h3>Confianza arriba</h3>
+          <p>Medios de pago, envíos y cambios en el primer scroll; reduce ansiedad pre-checkout.</p>
+        </div>
+        <div class="card">
+          <h3>Imágenes swipeables</h3>
+          <p>Galería táctil con zoom; en mobile, el producto “se siente” antes del click.</p>
+        </div>
+        <div class="card">
+          <h3>Reviews filtrables</h3>
+          <p>Destacar “verificado” y fotos de usuario aumenta persuasión sin alargar la página.</p>
+        </div>
+        <div class="card">
+          <h3>Barra de progreso checkout</h3>
+          <p>Pasos claros (Envío → Pago → Listo) disminuye sensación de trámite infinito.</p>
+        </div>
+        <div class="card">
+          <h3>Errores amigables</h3>
+          <p>Si falla el pago, mensaje concreto y reintento; no mandar al usuario al vacío.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 7: PDP con cupón -->
+    <section id="pdp" aria-labelledby="pdp-title">
+      <div class="section-head">
+        <h2 id="pdp-title">🎯 PDP demo + cupón</h2>
+        <span class="hint">Generá y guardá en este dispositivo</span>
+      </div>
+      <div class="pdp-card">
+        <div class="pdp-img" aria-hidden="true">📦</div>
+        <div>
+          <div class="pdp-title">Auriculares Pro — edición Hot Sale</div>
+          <p style="color:var(--text-muted);font-size:0.88rem;margin-top:0.35rem">SKU demo · Envío gratis &gt; $50.000</p>
+          <p class="pdp-price"><del>$89.999</del> $62.999</p>
+        </div>
+        <button type="button" class="btn-primary" id="btn-comprar">Comprar ahora — generar cupón</button>
+        <div class="coupon-box" id="coupon-box">
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem">Tu cupón exclusivo</p>
+          <div class="coupon-code" id="coupon-code"></div>
+          <p class="coupon-note">Guardado en localStorage · Válido en este navegador para la demo</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 8: Antes vs después -->
+    <section id="compare" aria-labelledby="compare-title">
+      <div class="section-head">
+        <h2 id="compare-title">🔥 Antes vs después (enfoque comercial)</h2>
+        <span class="hint">Cómo se siente la preparación</span>
+      </div>
+      <div class="compare">
+        <div class="compare-col before">
+          <h3>Antes</h3>
+          <ul>
+            <li>Descuentos genéricos sin jerarquía visual</li>
+            <li>PDP larga sin cuotas visibles</li>
+            <li>Checkout con sorpresas de costo</li>
+            <li>Poca prueba social y reviews</li>
+          </ul>
+        </div>
+        <div class="compare-col after">
+          <h3>Después</h3>
+          <ul>
+            <li>Oferta principal + escasez honesta</li>
+            <li>Precio, cuota y envío en primer viewport</li>
+            <li>Checkout lineal con totales claros</li>
+            <li>Prueba social y garantías visibles</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 9: Preparación storytelling -->
+    <section id="prep" aria-labelledby="prep-title">
+      <div class="section-head">
+        <h2 id="prep-title">⏳ Preparación Hot Sale</h2>
+        <span class="hint">Narrativa y expectativa</span>
+      </div>
+      <div class="story">
+        <p>
+          El <strong>Hot Sale</strong> no es solo un fin de semana de descuentos: es el momento en el que millones de personas
+          abren la billetera digital con intención real de comprar. Quien llega con stock definido, precios coherentes y una
+          experiencia mobile impecable captura una porción desproporcionada de esa demanda concentrada.
+        </p>
+        <p>
+          La expectativa se construye <strong>antes</strong> del primer día: teasers, listas de deseos, recordatorios y
+          landings específicas por categoría preparan el terreno. Durante el evento, la velocidad de carga y la claridad del
+          beneficio (precio final, cuotas, envío) son los verdaderos motores de conversión.
+        </p>
+        <p>
+          Después importa el <strong>postventa</strong>: entregas cumplidas y comunicación proactiva convierten compradores
+          ocasionales en clientes recurrentes. Este dashboard te invita a explorar el contexto histórico y a actuar con datos
+          y criterio de producto.
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      Hot Sale Argentina — dashboard ilustrativo para análisis y CRO · Un solo archivo HTML · Sin dependencias externas
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* ========== CONFIG: inicio del próximo Hot Sale (ajustá según calendario oficial CACE) ========== */
+      var HOT_SALE_START = new Date("2026-05-12T00:00:00-03:00");
+
+      /* Datos del gráfico: heightPct 0-100 relativo al máximo; facturación en millones ARS donde aplica */
+      var YEAR_DATA = [
+        {
+          year: 2014,
+          label: "2014",
+          heightPct: 6,
+          facturacion: "Pionero (~estimado bajo miles de M)",
+          crecimiento: "Base / n/a",
+          usuarios: "Primera ola early adopters",
+          tendencia: "Inicio del Hot Sale en Argentina",
+          comportamiento: ["Curiosidad por el formato", "Compra exploratoria", "Pocas comparaciones online"],
+          categorias: ["Indumentaria", "Electro chico", "Deportes"],
+        },
+        {
+          year: 2015,
+          label: "2015",
+          heightPct: 10,
+          facturacion: "Crecimiento inicial del canal",
+          crecimiento: "~+40% vs 2014 (ilustrativo)",
+          usuarios: "Ecommerce en expansión",
+          tendencia: "Crecimiento inicial del ecommerce en evento",
+          comportamiento: ["Más confianza en pagos online", "Busca ofertas puntuales"],
+          categorias: ["Tecnología", "Hogar", "Juguetes"],
+        },
+        {
+          year: 2016,
+          label: "2016",
+          heightPct: 14,
+          facturacion: "Mayor volumen de órdenes",
+          crecimiento: "~+25% (ilustrativo)",
+          usuarios: "Adopción retail amplia",
+          tendencia: "Mayor adopción por parte del consumidor",
+          comportamiento: ["Compara entre 2–3 sitios", "Atento al envío"],
+          categorias: ["Electro", "Moda", "Belleza"],
+        },
+        {
+          year: 2017,
+          label: "2017",
+          heightPct: 18,
+          facturacion: "Más players en plataforma",
+          crecimiento: "~+22% (ilustrativo)",
+          usuarios: "Participación multimarca",
+          tendencia: "Más marcas y retailers participan",
+          comportamiento: ["Compara precios", "Espera flash deals"],
+          categorias: ["Celulares", "Indumentaria", "Hogar"],
+        },
+        {
+          year: 2018,
+          label: "2018",
+          heightPct: 24,
+          facturacion: "Salto en categorías digitales",
+          crecimiento: "~+28% (ilustrativo)",
+          usuarios: "Mobile crece fuerte",
+          tendencia: "Expansión fuerte del evento",
+          comportamiento: ["Compra desde el celular", "Busca cuotas"],
+          categorias: ["Tech", "Gaming", "Electro"],
+        },
+        {
+          year: 2019,
+          label: "2019",
+          heightPct: 30,
+          facturacion: "Consolidación pre-pandemia",
+          crecimiento: "~+18% (ilustrativo)",
+          usuarios: "Hábito de compra establecido",
+          tendencia: "Consolidación del ecommerce en Argentina",
+          comportamiento: ["Lista de deseos previa", "Compara marketplaces"],
+          categorias: ["Electro", "Moda", "Alimentos inicio"],
+        },
+        {
+          year: 2020,
+          label: "2020",
+          heightPct: 55,
+          facturacion: "Salto por contexto sanitario",
+          crecimiento: "~+60% vs 2019 (ilustrativo)",
+          usuarios: "Masa crítica digital",
+          tendencia: "Explosión del ecommerce por pandemia",
+          comportamiento: ["Compra impulsiva en hogar", "Stock y delivery prioritarios"],
+          categorias: ["Electro", "Tecnología", "Alimentos delivery"],
+        },
+        {
+          year: 2021,
+          label: "2021",
+          heightPct: 62,
+          facturacion: "Sostiene niveles altos",
+          crecimiento: "~+12% (ilustrativo)",
+          usuarios: "Nuevos compradores retenidos",
+          tendencia: "Continuidad de crecimiento digital",
+          comportamiento: ["Busca cuotas extendidas", "Compara shipping"],
+          categorias: ["Indumentaria", "Belleza", "Tech"],
+        },
+        {
+          year: 2022,
+          label: "2022",
+          heightPct: 68,
+          facturacion: "Ticket más racional",
+          crecimiento: "~+8% (ilustrativo)",
+          usuarios: "Mayor madurez de comparación",
+          tendencia: "Consumidor más analítico",
+          comportamiento: ["Compara precios", "Lee reviews", "Espera mejor descuento"],
+          categorias: ["Electro", "Moda", "Super"],
+        },
+        {
+          year: 2023,
+          label: "2023",
+          heightPct: 78,
+          facturacion: "~$86.000 M (reportes de prensa)",
+          crecimiento: "~+15% (ilustrativo)",
+          usuarios: "Tráfico mobile dominante",
+          tendencia: "Crecimiento sostenido del evento",
+          comportamiento: ["Busca cuotas", "App + web", "Cupones"],
+          categorias: ["Tecnología", "Indumentaria", "Alimentos"],
+        },
+        {
+          year: 2024,
+          label: "2024",
+          heightPct: 92,
+          facturacion: "$346.000 M",
+          crecimiento: "Fuerte vs 2023 (contexto inflacionario)",
+          usuarios: "Decenas de millones de visitas",
+          tendencia: "Escala masiva y competencia por atención",
+          comportamiento: ["Compara entre marketplaces", "Sensibilidad al precio final"],
+          categorias: ["Electro", "Belleza", "Zapatillas"],
+        },
+        {
+          year: 2025,
+          label: "2025",
+          heightPct: 100,
+          facturacion: "$566.765 M — récord",
+          crecimiento: "Récord histórico",
+          usuarios: "+11M productos listados",
+          tendencia: "Récord histórico de facturación",
+          comportamiento: ["Alta intención", "Optimización mobile", "Descuento medio ~30%"],
+          categorias: ["Tech", "Indumentaria", "Alimentos", "Belleza"],
+        },
+      ];
+
+      /* ========== Countdown ========== */
+      function pad(n) {
+        return n < 10 ? "0" + n : String(n);
+      }
+
+      function tickCountdown() {
+        var now = new Date();
+        var diff = HOT_SALE_START - now;
+        var title = document.getElementById("countdown-title");
+        var elD = document.getElementById("cd-days");
+        var elH = document.getElementById("cd-hours");
+        var elM = document.getElementById("cd-mins");
+        var elS = document.getElementById("cd-secs");
+
+        if (diff <= 0) {
+          title.textContent = "¡Hot Sale en curso o ya pasó — actualizá HOT_SALE_START en el script!";
+          elD.textContent = elH.textContent = elM.textContent = elS.textContent = "0";
+          return;
+        }
+
+        var sec = Math.floor(diff / 1000);
+        var d = Math.floor(sec / 86400);
+        sec %= 86400;
+        var h = Math.floor(sec / 3600);
+        sec %= 3600;
+        var m = Math.floor(sec / 60);
+        var s = sec % 60;
+
+        title.textContent = "Faltan " + d + " día" + (d !== 1 ? "s" : "") + " para el Hot Sale";
+        elD.textContent = String(d);
+        elH.textContent = pad(h);
+        elM.textContent = pad(m);
+        elS.textContent = pad(s);
+      }
+
+      tickCountdown();
+      setInterval(tickCountdown, 1000);
+
+      /* ========== Tooltip HTML builder ========== */
+      function buildDetailHtml(d, withModalTitle) {
+        var catLis = d.categorias
+          .map(function (c) {
+            return "<li>" + escapeHtml(c) + "</li>";
+          })
+          .join("");
+        var behLis = d.comportamiento
+          .map(function (b) {
+            return "<li>" + escapeHtml(b) + "</li>";
+          })
+          .join("");
+        var h3open = withModalTitle ? '<h3 id="modal-title">' : "<h3>";
+
+        return (
+          h3open +
+          escapeHtml(d.tendencia) +
+          "</h3>" +
+          '<div class="year-tag">Año ' +
+          d.year +
+          "</div>" +
+          '<div class="tooltip-block"><h4>📊 Datos clave</h4><ul>' +
+          "<li>Facturación: " +
+          escapeHtml(d.facturacion) +
+          "</li>" +
+          "<li>Crecimiento: " +
+          escapeHtml(d.crecimiento) +
+          "</li>" +
+          "<li>Usuarios / contexto: " +
+          escapeHtml(d.usuarios) +
+          "</li></ul></div>" +
+          '<div class="tooltip-block"><h4>🔥 Comportamiento</h4><ul>' +
+          behLis +
+          "</ul></div>" +
+          '<div class="tooltip-block"><h4>🛍️ Categorías destacadas</h4><ul>' +
+          catLis +
+          "</ul></div>"
+        );
+      }
+
+      function escapeHtml(text) {
+        var div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      /* ========== Chart render ========== */
+      var chartArea = document.getElementById("chart-area");
+      var tooltip = document.getElementById("chart-tooltip");
+      var tooltipContent = document.getElementById("tooltip-content");
+      var modal = document.getElementById("chart-modal");
+      var modalBody = document.getElementById("modal-body");
+      var modalClose = document.getElementById("modal-close");
+      var activeYear = null;
+
+      function setActiveBar(year) {
+        var bars = chartArea.querySelectorAll(".bar");
+        bars.forEach(function (b) {
+          b.classList.toggle("active", parseInt(b.getAttribute("data-year"), 10) === year);
+        });
+        activeYear = year;
+      }
+
+      function positionTooltip(el, clientX, clientY) {
+        tooltipContent.innerHTML = buildDetailHtml(
+          YEAR_DATA.filter(function (x) {
+            return x.year === parseInt(el.getAttribute("data-year"), 10);
+          })[0],
+          false
+        );
+
+        tooltip.classList.add("visible");
+        tooltip.setAttribute("aria-hidden", "false");
+
+        var tw = tooltip.offsetWidth;
+        var th = tooltip.offsetHeight;
+        var pad = 12;
+        var x = clientX + pad;
+        var y = clientY - th - pad;
+
+        if (x + tw > window.innerWidth - pad) x = window.innerWidth - tw - pad;
+        if (x < pad) x = pad;
+        if (y < pad) y = clientY + pad;
+        if (y + th > window.innerHeight - pad) y = window.innerHeight - th - pad;
+
+        tooltip.style.left = x + "px";
+        tooltip.style.top = y + "px";
+      }
+
+      function hideTooltip() {
+        tooltip.classList.remove("visible");
+        tooltip.setAttribute("aria-hidden", "true");
+      }
+
+      YEAR_DATA.forEach(function (d, index) {
+        var group = document.createElement("div");
+        group.className = "bar-group";
+
+        var bar = document.createElement("button");
+        bar.type = "button";
+        bar.className = "bar";
+        bar.setAttribute("data-year", d.year);
+        bar.setAttribute("aria-label", "Año " + d.year + ": " + d.tendencia);
+        bar.style.height = d.heightPct + "%";
+
+        var lbl = document.createElement("div");
+        lbl.className = "bar-label";
+        lbl.textContent = d.label;
+
+        group.appendChild(bar);
+        group.appendChild(lbl);
+        chartArea.appendChild(group);
+
+        /* Animación escalonada al cargar */
+        requestAnimationFrame(function () {
+          setTimeout(function () {
+            bar.classList.add("animated");
+          }, index * 45);
+        });
+
+        bar.addEventListener("mouseenter", function (e) {
+          setActiveBar(d.year);
+          positionTooltip(bar, e.clientX, e.clientY);
+        });
+
+        bar.addEventListener("mousemove", function (e) {
+          positionTooltip(bar, e.clientX, e.clientY);
+        });
+
+        bar.addEventListener("mouseleave", function () {
+          hideTooltip();
+        });
+
+        bar.addEventListener("focus", function (e) {
+          setActiveBar(d.year);
+          var rect = bar.getBoundingClientRect();
+          positionTooltip(bar, rect.left + rect.width / 2, rect.top);
+        });
+
+        bar.addEventListener("blur", hideTooltip);
+
+        bar.addEventListener("click", function () {
+          modalBody.innerHTML = buildDetailHtml(d, true);
+          modal.classList.add("open");
+          modal.setAttribute("aria-hidden", "false");
+          setActiveBar(d.year);
+        });
+      });
+
+      modalClose.addEventListener("click", function () {
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+      });
+
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+          modal.classList.remove("open");
+          modal.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("open")) {
+          modal.classList.remove("open");
+          modal.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      /* ========== Tabs rubros ========== */
+      var tabBtns = document.querySelectorAll(".trend-tabs button");
+      var panels = {
+        fact: document.getElementById("panel-fact"),
+        vol: document.getElementById("panel-vol"),
+        busq: document.getElementById("panel-busq"),
+      };
+
+      tabBtns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var tab = btn.getAttribute("data-tab");
+          tabBtns.forEach(function (b) {
+            b.classList.remove("active");
+            b.setAttribute("aria-selected", "false");
+          });
+          btn.classList.add("active");
+          btn.setAttribute("aria-selected", "true");
+
+          Object.keys(panels).forEach(function (key) {
+            var p = panels[key];
+            var on = key === tab;
+            p.classList.toggle("active", on);
+            p.hidden = !on;
+          });
+        });
+      });
+
+      /* ========== Cupón + localStorage ========== */
+      var LS_KEY = "hotsale_demo_coupon";
+
+      function randomCoupon() {
+        var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        var out = "HS";
+        for (var i = 0; i < 8; i++) {
+          out += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return out;
+      }
+
+      var btnComprar = document.getElementById("btn-comprar");
+      var couponBox = document.getElementById("coupon-box");
+      var couponCodeEl = document.getElementById("coupon-code");
+
+      function showCoupon(code) {
+        couponCodeEl.textContent = code;
+        couponBox.classList.add("visible");
+      }
+
+      var saved = localStorage.getItem(LS_KEY);
+      if (saved) {
+        showCoupon(saved);
+      }
+
+      btnComprar.addEventListener("click", function () {
+        var code = randomCoupon();
+        try {
+          localStorage.setItem(LS_KEY, code);
+        } catch (e) {
+          /* privado / bloqueado */
+        }
+        showCoupon(code);
+      });
+    })();
+  </script>
+</body>
+</html>
